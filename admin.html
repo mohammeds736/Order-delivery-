@@ -5,26 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>لوحة المطعم | لقمان أبو صليح</title>
 
-  <!-- خط عربي -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- أيقونات -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <!-- Top Nav -->
+  <!-- Admin Login Overlay -->
+  <div id="adminGate" class="gate">
+    <div class="gate-card">
+      <div class="gate-title">
+        <i class="fa-solid fa-lock"></i>
+        دخول لوحة المطعم
+      </div>
+      <div class="muted" style="margin-top:6px; line-height:1.8;">
+        هذه اللوحة مخصصة للإدارة فقط. الرجاء إدخال كلمة المرور.
+      </div>
+
+      <label class="label" style="margin-top:12px;">كلمة المرور</label>
+      <input id="adminPinInput" class="input" type="password" placeholder="أدخل كلمة المرور" />
+
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="btnAdminLogin" class="btn btn-primary" type="button">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          دخول
+        </button>
+        <a class="btn btn-ghost" href="index.html">
+          <i class="fa-solid fa-arrow-right"></i>
+          رجوع
+        </a>
+      </div>
+
+      <div id="adminGateMsg" class="muted small" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
   <header class="nav">
     <div class="nav-left">
       <div class="brand">
         <div class="brand-mark">ل</div>
         <div class="brand-text">
           <div class="brand-name">لوحة المطعم</div>
-          <div class="brand-sub">لقمان أبو صليح</div>
+          <div class="brand-sub">الأردن • عمّان</div>
         </div>
       </div>
     </div>
@@ -39,57 +64,6 @@
   </header>
 
   <main class="container main">
-    <!-- Dashboard -->
-    <section class="section card">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">لوحة التحكم</h2>
-          <p class="section-sub muted">
-            إدارة سريعة للطلبات والمنيو والإعدادات. هذا نموذج تجريبي يعمل عبر localStorage.
-          </p>
-        </div>
-        <div class="note-badge">
-          <i class="fa-solid fa-shield-halved"></i>
-          Demo Admin Panel
-        </div>
-      </div>
-
-      <div class="admin-stats">
-        <div class="stat">
-          <div class="stat-icon"><i class="fa-solid fa-inbox"></i></div>
-          <div>
-            <div class="stat-title">طلبات جديدة</div>
-            <div class="stat-value" id="statReceived">0</div>
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-icon"><i class="fa-solid fa-kitchen-set"></i></div>
-          <div>
-            <div class="stat-title">قيد التحضير</div>
-            <div class="stat-value" id="statPreparing">0</div>
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-icon"><i class="fa-solid fa-motorcycle"></i></div>
-          <div>
-            <div class="stat-title">بالطريق</div>
-            <div class="stat-value" id="statOnTheWay">0</div>
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-          <div>
-            <div class="stat-title">مكتملة</div>
-            <div class="stat-value" id="statDelivered">0</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Settings -->
     <section class="section card">
       <div class="section-head">
         <div>
@@ -98,27 +72,27 @@
         </div>
       </div>
 
-      <div class="admin-grid">
+      <div class="checkout-grid">
         <div class="panel">
           <div class="panel-title">
             <i class="fa-solid fa-toggle-on"></i>
             حالة المطعم
           </div>
 
-          <div class="toggle-row">
-            <label class="radio big">
-              <input type="radio" name="isOpen" value="true" />
-              <span><i class="fa-solid fa-door-open"></i> مفتوح</span>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <label class="btn btn-secondary" style="flex:1; justify-content:center;">
+              <input type="radio" name="isOpen" value="true" style="margin-inline-start:10px;" />
+              مفتوح
             </label>
 
-            <label class="radio big">
-              <input type="radio" name="isOpen" value="false" />
-              <span><i class="fa-solid fa-door-closed"></i> مغلق</span>
+            <label class="btn btn-secondary" style="flex:1; justify-content:center;">
+              <input type="radio" name="isOpen" value="false" style="margin-inline-start:10px;" />
+              مغلق
             </label>
           </div>
 
-          <div class="muted small" style="margin-top:8px;">
-            نصيحة: عند الإغلاق سيمنع النظام تأكيد الطلبات من واجهة الزبون.
+          <div class="muted small" style="margin-top:10px;">
+            عند الإغلاق، سيتم منع تأكيد الطلبات من واجهة الزبون.
           </div>
         </div>
 
@@ -128,25 +102,16 @@
             إعدادات الطلب
           </div>
 
-          <label class="label">أجرة التوصيل (دينار عراقي)</label>
-          <div class="field field-icon">
-            <i class="fa-solid fa-truck-fast"></i>
-            <input id="deliveryFeeInput" class="input" type="number" min="0" />
-          </div>
+          <label class="label">أجرة التوصيل (د.أ)</label>
+          <input id="deliveryFeeInput" class="input" type="number" step="0.05" min="0" />
 
-          <label class="label">الحد الأدنى للطلب (دينار عراقي)</label>
-          <div class="field field-icon">
-            <i class="fa-solid fa-coins"></i>
-            <input id="minOrderInput" class="input" type="number" min="0" />
-          </div>
+          <label class="label">الحد الأدنى للطلب (د.أ)</label>
+          <input id="minOrderInput" class="input" type="number" step="0.05" min="0" />
 
           <label class="label">أوقات العمل</label>
-          <div class="field field-icon">
-            <i class="fa-solid fa-clock"></i>
-            <input id="hoursInput" class="input" placeholder="مثال: 12:00 ظهرًا - 12:00 ليلًا" />
-          </div>
+          <input id="hoursInput" class="input" />
 
-          <div class="admin-actions">
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
             <button id="btnSaveSettings" class="btn btn-primary" type="button">
               <i class="fa-solid fa-floppy-disk"></i>
               حفظ الإعدادات
@@ -161,14 +126,11 @@
       </div>
     </section>
 
-    <!-- Orders -->
     <section class="section card">
       <div class="section-head">
         <div>
           <h2 class="section-title">الطلبات</h2>
-          <p class="section-sub muted">
-            تحديث الحالة سيظهر فورًا عند الزبون (ضمن نفس المتصفح/الجهاز في النموذج).
-          </p>
+          <p class="section-sub muted">تغيير الحالة سيظهر في تتبع الزبون ضمن نفس الجهاز (لأن هذا نموذج).</p>
         </div>
 
         <div class="filters">
@@ -191,12 +153,11 @@
       <div id="ordersList" class="orders"></div>
     </section>
 
-    <!-- Menu Management -->
     <section class="section card">
       <div class="section-head">
         <div>
           <h2 class="section-title">إدارة المنيو</h2>
-          <p class="section-sub muted">تعديل الأسعار وتشغيل/إيقاف الأصناف بسهولة.</p>
+          <p class="section-sub muted">تعديل الأسعار وتشغيل/إيقاف الأصناف.</p>
         </div>
       </div>
 
@@ -205,7 +166,7 @@
 
     <footer class="footer">
       <div class="muted small">
-        .
+        هذا نموذج. للحماية الحقيقية يلزم Back-end وصلاحيات فعلية.
       </div>
     </footer>
   </main>
@@ -215,110 +176,5 @@
   <script src="data.js"></script>
   <script src="storage.js"></script>
   <script src="admin.js"></script>
-
-  <!-- تحسينات عرض إحصاءات Dashboard دون تغيير منطق admin.js -->
-  <script>
-    (function(){
-      function countByStatus(orders, status){
-        return orders.filter(o => o.status === status).length;
-      }
-
-      function refreshStats(){
-        try {
-          const st = Storage.getState();
-          const orders = st.orders || [];
-          const r = document.getElementById("statReceived");
-          const p = document.getElementById("statPreparing");
-          const w = document.getElementById("statOnTheWay");
-          const d = document.getElementById("statDelivered");
-
-          if (r) r.textContent = countByStatus(orders, "RECEIVED");
-          if (p) p.textContent = countByStatus(orders, "PREPARING");
-          if (w) w.textContent = countByStatus(orders, "ON_THE_WAY");
-          if (d) d.textContent = countByStatus(orders, "DELIVERED");
-        } catch {}
-      }
-
-      refreshStats();
-      setInterval(refreshStats, 2000);
-    })();
-  </script>
-
-  <!-- ستايل إضافي صغير خاص بالـ Admin (ضمن نفس الملف للحفاظ على بساطة المشروع) -->
-  <style>
-    .admin-stats{
-      padding: 14px 16px 16px;
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-    @media (max-width: 980px){
-      .admin-stats{ grid-template-columns: repeat(2, 1fr); }
-    }
-
-    .stat{
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,.16);
-      border-radius: 22px;
-      padding: 12px;
-      display:flex;
-      gap: 12px;
-      align-items:center;
-    }
-    .stat-icon{
-      width: 44px;
-      height: 44px;
-      display:grid;
-      place-items:center;
-      border-radius: 16px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-    }
-    .stat-title{
-      font-weight: 900;
-      font-size: 12px;
-      color: rgba(238,242,255,.78);
-    }
-    .stat-value{
-      font-weight: 900;
-      font-size: 22px;
-      margin-top: 4px;
-    }
-
-    .admin-grid{
-      padding: 14px 16px 16px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    @media (max-width: 980px){
-      .admin-grid{ grid-template-columns: 1fr; }
-    }
-
-    .toggle-row{
-      display:flex;
-      gap:10px;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-    .radio.big{
-      flex: 1 1 240px;
-      justify-content: center;
-      padding: 12px;
-    }
-    .radio.big span{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      font-weight: 900;
-    }
-
-    .admin-actions{
-      margin-top: 12px;
-      display:flex;
-      gap:10px;
-      flex-wrap: wrap;
-    }
-  </style>
 </body>
-  </html>
+        </html>
