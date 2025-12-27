@@ -5,37 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>لقمان أبو صليح | طلب وتوصيل</title>
 
-  <!-- خط عربي جميل -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- أيقونات -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- Leaflet (خريطة مجانية OpenStreetMap بدون API Key) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 
 <body>
-  <!-- Top Nav -->
   <header class="nav">
     <div class="nav-left">
       <div class="brand">
         <div class="brand-mark">ل</div>
         <div class="brand-text">
           <div class="brand-name">لقمان أبو صليح</div>
-          <div class="brand-sub">طلب وتوصيل داخل العراق</div>
+          <div class="brand-sub">طلب وتوصيل داخل الأردن</div>
         </div>
       </div>
     </div>
 
     <div class="nav-right">
       <span id="openBadge" class="badge badge-soft"></span>
-      <button id="btnGoAdmin" class="btn btn-ghost" type="button">
-        <i class="fa-solid fa-store"></i>
+
+      <!-- زر الأدمن مخفي افتراضيًا -->
+      <button id="btnGoAdmin" class="btn btn-ghost" type="button" style="display:none;">
+        <i class="fa-solid fa-lock"></i>
         لوحة المطعم
       </button>
 
@@ -47,14 +44,13 @@
     </div>
   </header>
 
-  <!-- Hero -->
   <section class="hero">
     <div class="hero-inner container">
       <div class="hero-copy">
         <h1>أطلب أكلك بسرعة وبشكل أنيق</h1>
         <p>
           اختر من المنيو، أضف للسلة، حدّد موقعك على الخريطة، وتابع حالة الطلب.
-          <span class="muted">هذا نموذج تجريبي شبه حقيقي.</span>
+          <span class="muted">هذا نموذج تجريبي شبه حقيقي للأردن.</span>
         </p>
 
         <div class="hero-actions">
@@ -90,7 +86,6 @@
   </section>
 
   <main class="container main">
-    <!-- Menu -->
     <section id="menuSection" class="section card">
       <div class="section-head">
         <div>
@@ -111,7 +106,6 @@
       <div id="menuGrid" class="menu-grid"></div>
     </section>
 
-    <!-- Checkout (Location + Place order) -->
     <section class="section card">
       <div class="section-head">
         <div>
@@ -133,7 +127,7 @@
           </div>
 
           <label class="label">رقم الهاتف</label>
-          <input id="phoneInput" class="input" placeholder="مثال: 07XXXXXXXXX" />
+          <input id="phoneInput" class="input" placeholder="مثال: 07XXXXXXXX" />
 
           <label class="label">الاسم (اختياري)</label>
           <input id="nameInput" class="input" placeholder="اسم الزبون" />
@@ -182,7 +176,7 @@
           <div id="map" class="map"></div>
 
           <label class="label">العنوان النصي (اختياري)</label>
-          <input id="addressInput" class="input" placeholder="مثال: بغداد - الكرادة - شارع ..." />
+          <input id="addressInput" class="input" placeholder="مثال: عمّان - شارع ..." />
 
           <div class="summary">
             <div class="sum-row"><span>المجموع</span><strong id="subtotalText">0</strong></div>
@@ -199,7 +193,6 @@
       </div>
     </section>
 
-    <!-- Tracking -->
     <section id="trackSection" class="section card">
       <div class="section-head">
         <div>
@@ -228,12 +221,13 @@
 
     <footer class="footer">
       <div class="muted small">
-        e.
+        نموذج للنشر على GitHub Pages. البيانات محفوظة محليًا على نفس المتصفح (localStorage).
+        <br/>
+        لدخول لوحة المطعم: افتح الصفحة بهذه الصيغة: <strong>index.html?admin=1</strong>
       </div>
     </footer>
   </main>
 
-  <!-- Cart Drawer -->
   <aside id="cartDrawer" class="drawer">
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <div class="drawer-panel">
@@ -270,7 +264,6 @@
   <script src="storage.js"></script>
   <script src="app.js"></script>
 
-  <!-- تحسينات واجهة بسيطة دون تغيير منطق الطلب -->
   <script>
     (function(){
       const drawer = document.getElementById("cartDrawer");
@@ -287,11 +280,17 @@
       overlay.addEventListener("click", closeDrawer);
       btnGoCheckout.addEventListener("click", closeDrawer);
 
-      // زر لوحة المطعم
-      document.getElementById("btnGoAdmin").addEventListener("click", ()=> {
-        window.location.href = "admin.html";
-      });
+      // إظهار زر الأدمن فقط إذا كانت الصفحة تحتوي ?admin=1
+      const adminBtn = document.getElementById("btnGoAdmin");
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin") === "1") {
+        adminBtn.style.display = "inline-flex";
+        adminBtn.addEventListener("click", ()=> {
+          document.body.classList.add("page-leave");
+          setTimeout(()=> { window.location.href = "admin.html"; }, 180);
+        });
+      }
     })();
   </script>
 </body>
-  </html>
+                  </html>
