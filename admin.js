@@ -1,6 +1,51 @@
 (function () {
   Storage.initIfEmpty();
 
+  // =========================================================
+  // Admin Gate (Password)
+  // =========================================================
+  const GATE_SESSION_KEY = "LQS_ADMIN_AUTH";
+  const ADMIN_PASSWORD = "Kaleem7364"; // كلمة المرور المطلوبة
+
+  const gate = document.getElementById("adminGate");
+  const passInput = document.getElementById("adminPinInput");
+  const btnLogin = document.getElementById("btnAdminLogin");
+  const gateMsg = document.getElementById("adminGateMsg");
+
+  function isAuthed(){
+    return sessionStorage.getItem(GATE_SESSION_KEY) === "1";
+  }
+
+  function showGate(msg){
+    gate?.classList.add("show");
+    if (gateMsg) gateMsg.textContent = msg || "";
+    setTimeout(()=> passInput?.focus(), 60);
+  }
+
+  function hideGate(){
+    gate?.classList.remove("show");
+    if (gateMsg) gateMsg.textContent = "";
+  }
+
+  function handleLogin(){
+    const p = (passInput?.value || "").trim();
+    if (!p) return showGate("أدخل كلمة المرور.");
+    if (p !== ADMIN_PASSWORD) return showGate("كلمة المرور غير صحيحة.");
+    sessionStorage.setItem(GATE_SESSION_KEY, "1");
+    hideGate();
+    showToast("تم تسجيل الدخول كإدمن.");
+    loadSettingsUI();
+    renderOrders();
+    renderMenuAdmin();
+  }
+
+  if (!isAuthed()){
+    showGate("");
+    btnLogin?.addEventListener("click", handleLogin);
+    passInput?.addEventListener("keydown", (e)=> { if (e.key === "Enter") handleLogin(); });
+    return;
+  }
+
   // ---------- DOM ----------
   const elOpenBadge = document.getElementById("openBadgeAdmin");
   const elDelivery = document.getElementById("deliveryFeeInput");
@@ -16,7 +61,6 @@
   const elMenuAdmin = document.getElementById("menuAdmin");
   const toast = document.getElementById("toast");
 
-  // ---------- Helpers ----------
   function showToast(msg) {
     if (!toast) return;
     toast.textContent = msg;
@@ -26,23 +70,16 @@
 
   function statusLabel(s) {
     switch (s) {
-      case "RECEIVED":
-        return "تم الاستلام";
-      case "PREPARING":
-        return "قيد التحضير";
-      case "ON_THE_WAY":
-        return "بالطريق";
-      case "DELIVERED":
-        return "تم التسليم";
-      case "CANCELED":
-        return "ملغي";
-      default:
-        return s;
+      case "RECEIVED": return "تم الاستلام";
+      case "PREPARING": return "قيد التحضير";
+      case "ON_THE_WAY": return "بالطريق";
+      case "DELIVERED": return "تم التسليم";
+      case "CANCELED": return "ملغي";
+      default: return s;
     }
   }
 
   function statusPillStyle(status) {
-    // أسلوب بسيط بألوان Inline حتى يعمل دون تعديل CSS إضافي
     switch (status) {
       case "RECEIVED":
         return { bg: "rgba(91,140,255,.12)", bd: "rgba(91,140,255,.35)" };
@@ -59,10 +96,8 @@
     }
   }
 
-  // ---------- Badge ----------
   function renderOpenBadge() {
     if (!elOpenBadge) return;
-
     const st = Storage.getState();
     const isOpen = !!st.settings.isOpenNow;
 
@@ -78,18 +113,14 @@
       : "rgba(255,77,77,.12)";
   }
 
-  // ---------- Settings ----------
   function loadSettingsUI() {
     const st = Storage.getState();
-
-    if (elDelivery) elDelivery.value = Number(st.settings.deliveryFeeIQD || 0);
-    if (elMinOrder) elMinOrder.value = Number(st.settings.minOrderIQD || 0);
+    if (elDelivery) elDelivery.value = Number(st.settings.deliveryFeeJOD || 0);
+    if (elMinOrder) elMinOrder.value = Number(st.settings.minOrderJOD || 0);
     if (elHours) elHours.value = st.settings.workingHoursText || "";
 
     const radios = document.querySelectorAll('input[name="isOpen"]');
-    radios.forEach((r) => {
-      r.checked = String(st.settings.isOpenNow) === r.value;
-    });
+    radios.forEach((r) => { r.checked = String(st.settings.isOpenNow) === r.value; });
 
     renderOpenBadge();
   }
@@ -104,8 +135,8 @@
 
     Storage.setState((s) => {
       s.settings.isOpenNow = isOpen;
-      s.settings.deliveryFeeIQD = delivery;
-      s.settings.minOrderIQD = minOrder;
+      s.settings.deliveryFeeJOD = delivery;
+      s.settings.minOrderJOD = minOrder;
       if (hours) s.settings.workingHoursText = hours;
       return s;
     });
@@ -115,8 +146,7 @@
   }
 
   function resetDemo() {
-    // إعادة ضبط كاملة إلى DEMO_SEED
-    localStorage.removeItem("LQS_APP_V1");
+    localStorage.removeItem("LQS_JO_V1");
     Storage.initIfEmpty();
     loadSettingsUI();
     renderOrders();
@@ -124,10 +154,9 @@
     showToast("تمت إعادة ضبط بيانات العرض.");
   }
 
-  if (elSave) elSave.addEventListener("click", saveSettings);
-  if (elReset) elReset.addEventListener("click", resetDemo);
+  elSave?.addEventListener("click", saveSettings);
+  elReset?.addEventListener("click", resetDemo);
 
-  // ---------- Orders ----------
   function getOrdersFiltered() {
     const st = Storage.getState();
     const filter = elFilter?.value || "ALL";
@@ -151,7 +180,6 @@
       o.status = newStatus;
       o.history = o.history || [];
       o.history.push({ at: new Date().toISOString(), status: newStatus });
-
       return s;
     });
 
@@ -159,9 +187,17 @@
     showToast(`تم تحديث الحالة إلى: ${statusLabel(newStatus)}`);
   }
 
+  function mkBtn(text, onClick, cls = "btn btn-secondary") {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = cls;
+    b.textContent = text;
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
   function renderOrders() {
     const orders = getOrdersFiltered();
-
     if (!elOrders) return;
 
     elOrders.innerHTML = "";
@@ -178,19 +214,18 @@
       head.className = "order-head";
 
       const left = document.createElement("div");
-
       const h3 = document.createElement("h3");
       h3.textContent = `${o.orderNumber} • ${statusLabel(o.status)}`;
 
       const meta = document.createElement("div");
       meta.className = "meta";
+      const createdAt = o.createdAt ? new Date(o.createdAt).toLocaleString("ar-JO") : "-";
 
-      const createdAt = o.createdAt ? new Date(o.createdAt).toLocaleString("ar-IQ") : "-";
       meta.innerHTML = `
         الهاتف: <strong>${o.customerPhone || "-"}</strong>
         ${o.customerName ? ` • الاسم: <strong>${o.customerName}</strong>` : ""}
         <br/>الوقت: ${createdAt}
-        <br/>الإجمالي: <strong>${Storage.formatIQD(o.totalIQD || 0)}</strong>
+        <br/>الإجمالي: <strong>${Storage.formatJOD(o.totalJOD || 0)}</strong>
       `;
 
       left.appendChild(h3);
@@ -200,11 +235,9 @@
       const pill = document.createElement("span");
       pill.className = "badge";
       pill.textContent = statusLabel(o.status);
-
       const sty = statusPillStyle(o.status);
       pill.style.background = sty.bg;
       pill.style.borderColor = sty.bd;
-
       right.appendChild(pill);
 
       head.appendChild(left);
@@ -226,14 +259,13 @@
 
       const controls = document.createElement("div");
       controls.className = "controls";
-
-      const btnRec = mkBtn("تم الاستلام", () => updateOrderStatus(o.id, "RECEIVED"), "btn btn-secondary");
-      const btnPrep = mkBtn("قيد التحضير", () => updateOrderStatus(o.id, "PREPARING"), "btn btn-secondary");
-      const btnWay = mkBtn("بالطريق", () => updateOrderStatus(o.id, "ON_THE_WAY"), "btn btn-secondary");
-      const btnDel = mkBtn("تم التسليم", () => updateOrderStatus(o.id, "DELIVERED"), "btn btn-primary");
-      const btnCan = mkBtn("إلغاء", () => updateOrderStatus(o.id, "CANCELED"), "btn btn-danger");
-
-      controls.append(btnRec, btnPrep, btnWay, btnDel, btnCan);
+      controls.append(
+        mkBtn("تم الاستلام", () => updateOrderStatus(o.id, "RECEIVED")),
+        mkBtn("قيد التحضير", () => updateOrderStatus(o.id, "PREPARING")),
+        mkBtn("بالطريق", () => updateOrderStatus(o.id, "ON_THE_WAY")),
+        mkBtn("تم التسليم", () => updateOrderStatus(o.id, "DELIVERED"), "btn btn-primary"),
+        mkBtn("إلغاء", () => updateOrderStatus(o.id, "CANCELED"), "btn btn-danger")
+      );
 
       box.appendChild(head);
       box.appendChild(items);
@@ -244,25 +276,16 @@
     }
   }
 
-  function mkBtn(text, onClick, cls = "btn btn-secondary") {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = cls;
-    b.textContent = text;
-    b.addEventListener("click", onClick);
-    return b;
-  }
+  elFilter?.addEventListener("change", renderOrders);
+  elSearch?.addEventListener("input", renderOrders);
 
-  if (elFilter) elFilter.addEventListener("change", renderOrders);
-  if (elSearch) elSearch.addEventListener("input", renderOrders);
-
-  // ---------- Menu Admin ----------
   function renderMenuAdmin() {
     const st = Storage.getState();
-    const items = (st.items || []).slice().sort((a, b) => (a.name || "").localeCompare(b.name || "", "ar"));
+    const items = (st.items || []).slice().sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "", "ar")
+    );
 
     if (!elMenuAdmin) return;
-
     elMenuAdmin.innerHTML = "";
 
     for (const it of items) {
@@ -278,19 +301,12 @@
 
       const r1 = document.createElement("div");
       r1.className = "row";
+      r1.innerHTML = `
+        <span class="muted small">السعر (د.أ)</span>
+        <input class="input" type="number" step="0.05" min="0" value="${Number(it.priceJOD || 0)}">
+      `;
 
-      const priceLabel = document.createElement("span");
-      priceLabel.className = "muted small";
-      priceLabel.textContent = "السعر (د.ع)";
-
-      const priceInput = document.createElement("input");
-      priceInput.className = "input";
-      priceInput.type = "number";
-      priceInput.min = "0";
-      priceInput.value = String(it.priceIQD || 0);
-
-      r1.appendChild(priceLabel);
-      r1.appendChild(priceInput);
+      const priceInput = r1.querySelector("input");
 
       const r2 = document.createElement("div");
       r2.className = "row";
@@ -334,7 +350,7 @@
         Storage.setState((s) => {
           const x = (s.items || []).find((z) => z.id === it.id);
           if (!x) return s;
-          x.priceIQD = newPrice;
+          x.priceJOD = newPrice;
           return s;
         });
         showToast("تم حفظ السعر.");
@@ -350,13 +366,9 @@
     }
   }
 
-  // ---------- Init ----------
   loadSettingsUI();
   renderOrders();
   renderMenuAdmin();
 
-  // تحديث تلقائي لالتقاط طلبات جديدة (ضمن نفس localStorage)
-  setInterval(() => {
-    renderOrders();
-  }, 2000);
+  setInterval(() => { renderOrders(); }, 2000);
 })();
