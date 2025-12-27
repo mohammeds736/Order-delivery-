@@ -1,23 +1,10 @@
-/* =========================================================
-   storage.js
-   Simple LocalStorage Layer for Demo Food Ordering App
-   Restaurant: لقمان أبو صليح
-   ========================================================= */
-
 const Storage = (() => {
-  const STORAGE_KEY = "LQS_APP_V1";
-
-  /* ---------- Internal Helpers ---------- */
+  const STORAGE_KEY = "LQS_JO_V1";
 
   function loadRaw() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    try {
-      return JSON.parse(raw);
-    } catch (e) {
-      console.error("Failed to parse storage data", e);
-      return null;
-    }
+    try { return JSON.parse(raw); } catch { return null; }
   }
 
   function saveRaw(state) {
@@ -25,49 +12,36 @@ const Storage = (() => {
   }
 
   function deepClone(obj) {
-    return structuredClone
+    return typeof structuredClone === "function"
       ? structuredClone(obj)
       : JSON.parse(JSON.stringify(obj));
   }
-
-  /* ---------- Initialization ---------- */
 
   function initIfEmpty(seed = DEMO_SEED) {
     const existing = loadRaw();
     if (existing) return existing;
 
     const initialState = {
-      // إعدادات المطعم
       settings: {
         restaurantName: seed.settings.restaurantName,
         isOpenNow: seed.settings.isOpenNow,
-        deliveryFeeIQD: seed.settings.deliveryFeeIQD,
-        minOrderIQD: seed.settings.minOrderIQD,
-        workingHoursText: seed.settings.workingHoursText
+        deliveryFeeJOD: seed.settings.deliveryFeeJOD,
+        minOrderJOD: seed.settings.minOrderJOD,
+        workingHoursText: seed.settings.workingHoursText,
+        countryLabel: seed.settings.countryLabel || "الأردن",
+        cityLabel: seed.settings.cityLabel || "عمّان"
       },
-
-      // المنيو
       categories: seed.categories || [],
       items: seed.items || [],
-
-      // السلة الحالية (للزبون)
       cart: [],
-
-      // الطلبات
       orders: [],
-
-      // آخر رقم طلب (للتتبع السريع)
       lastOrderNumber: null,
-
-      // عدّاد تسلسلي للطلبات
       seq: 100
     };
 
     saveRaw(initialState);
     return initialState;
   }
-
-  /* ---------- Public API ---------- */
 
   function getState() {
     return initIfEmpty();
@@ -80,11 +54,10 @@ const Storage = (() => {
     return next;
   }
 
-  /* ---------- Utilities ---------- */
-
-  function formatIQD(value) {
+  function formatJOD(value) {
     const n = Number(value || 0);
-    return n.toLocaleString("ar-IQ") + " د.ع";
+    // تنسيق أردني بسيط مع خانتين
+    return n.toLocaleString("ar-JO", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " د.أ";
   }
 
   function nextOrderNumber() {
@@ -104,16 +77,11 @@ const Storage = (() => {
     localStorage.removeItem(STORAGE_KEY);
   }
 
-  /* ---------- Exposed Object ---------- */
-
   return {
-    // core
     initIfEmpty,
     getState,
     setState,
-
-    // helpers
-    formatIQD,
+    formatJOD,
     nextOrderNumber,
     clearAll
   };
