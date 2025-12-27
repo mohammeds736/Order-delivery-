@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة المطعم | لقمان أبو صليح</title>
+
+  <!-- خط عربي -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- أيقونات -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- Top Nav -->
+  <header class="nav">
+    <div class="nav-left">
+      <div class="brand">
+        <div class="brand-mark">ل</div>
+        <div class="brand-text">
+          <div class="brand-name">لوحة المطعم</div>
+          <div class="brand-sub">لقمان أبو صليح</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <span id="openBadgeAdmin" class="badge badge-soft"></span>
+      <a class="btn btn-ghost" href="index.html">
+        <i class="fa-solid fa-arrow-right"></i>
+        واجهة الزبون
+      </a>
+    </div>
+  </header>
+
+  <main class="container main">
+    <!-- Dashboard -->
+    <section class="section card">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">لوحة التحكم</h2>
+          <p class="section-sub muted">
+            إدارة سريعة للطلبات والمنيو والإعدادات. هذا نموذج تجريبي يعمل عبر localStorage.
+          </p>
+        </div>
+        <div class="note-badge">
+          <i class="fa-solid fa-shield-halved"></i>
+          Demo Admin Panel
+        </div>
+      </div>
+
+      <div class="admin-stats">
+        <div class="stat">
+          <div class="stat-icon"><i class="fa-solid fa-inbox"></i></div>
+          <div>
+            <div class="stat-title">طلبات جديدة</div>
+            <div class="stat-value" id="statReceived">0</div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-icon"><i class="fa-solid fa-kitchen-set"></i></div>
+          <div>
+            <div class="stat-title">قيد التحضير</div>
+            <div class="stat-value" id="statPreparing">0</div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-icon"><i class="fa-solid fa-motorcycle"></i></div>
+          <div>
+            <div class="stat-title">بالطريق</div>
+            <div class="stat-value" id="statOnTheWay">0</div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div>
+            <div class="stat-title">مكتملة</div>
+            <div class="stat-value" id="statDelivered">0</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings -->
+    <section class="section card">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">إعدادات التشغيل</h2>
+          <p class="section-sub muted">فتح/إغلاق، أجرة توصيل، حد أدنى، أوقات العمل.</p>
+        </div>
+      </div>
+
+      <div class="admin-grid">
+        <div class="panel">
+          <div class="panel-title">
+            <i class="fa-solid fa-toggle-on"></i>
+            حالة المطعم
+          </div>
+
+          <div class="toggle-row">
+            <label class="radio big">
+              <input type="radio" name="isOpen" value="true" />
+              <span><i class="fa-solid fa-door-open"></i> مفتوح</span>
+            </label>
+
+            <label class="radio big">
+              <input type="radio" name="isOpen" value="false" />
+              <span><i class="fa-solid fa-door-closed"></i> مغلق</span>
+            </label>
+          </div>
+
+          <div class="muted small" style="margin-top:8px;">
+            نصيحة: عند الإغلاق سيمنع النظام تأكيد الطلبات من واجهة الزبون.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <i class="fa-solid fa-sliders"></i>
+            إعدادات الطلب
+          </div>
+
+          <label class="label">أجرة التوصيل (دينار عراقي)</label>
+          <div class="field field-icon">
+            <i class="fa-solid fa-truck-fast"></i>
+            <input id="deliveryFeeInput" class="input" type="number" min="0" />
+          </div>
+
+          <label class="label">الحد الأدنى للطلب (دينار عراقي)</label>
+          <div class="field field-icon">
+            <i class="fa-solid fa-coins"></i>
+            <input id="minOrderInput" class="input" type="number" min="0" />
+          </div>
+
+          <label class="label">أوقات العمل</label>
+          <div class="field field-icon">
+            <i class="fa-solid fa-clock"></i>
+            <input id="hoursInput" class="input" placeholder="مثال: 12:00 ظهرًا - 12:00 ليلًا" />
+          </div>
+
+          <div class="admin-actions">
+            <button id="btnSaveSettings" class="btn btn-primary" type="button">
+              <i class="fa-solid fa-floppy-disk"></i>
+              حفظ الإعدادات
+            </button>
+
+            <button id="btnResetDemo" class="btn btn-secondary" type="button">
+              <i class="fa-solid fa-rotate"></i>
+              إعادة ضبط بيانات العرض
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Orders -->
+    <section class="section card">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">الطلبات</h2>
+          <p class="section-sub muted">
+            تحديث الحالة سيظهر فورًا عند الزبون (ضمن نفس المتصفح/الجهاز في النموذج).
+          </p>
+        </div>
+
+        <div class="filters">
+          <select id="orderFilter" class="select">
+            <option value="ALL">الكل</option>
+            <option value="RECEIVED">تم الاستلام</option>
+            <option value="PREPARING">قيد التحضير</option>
+            <option value="ON_THE_WAY">بالطريق</option>
+            <option value="DELIVERED">تم التسليم</option>
+            <option value="CANCELED">ملغي</option>
+          </select>
+
+          <div class="field field-icon">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="orderSearch" class="input" placeholder="بحث برقم الطلب أو الهاتف..." />
+          </div>
+        </div>
+      </div>
+
+      <div id="ordersList" class="orders"></div>
+    </section>
+
+    <!-- Menu Management -->
+    <section class="section card">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">إدارة المنيو</h2>
+          <p class="section-sub muted">تعديل الأسعار وتشغيل/إيقاف الأصناف بسهولة.</p>
+        </div>
+      </div>
+
+      <div id="menuAdmin" class="menu-admin"></div>
+    </section>
+
+    <footer class="footer">
+      <div class="muted small">
+        لتحويل هذا النموذج إلى نظام حقيقي متعدد الأجهزة (زبون + مطعم على أجهزة مختلفة)، اربطه بـ Firebase أو Backend.
+      </div>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="data.js"></script>
+  <script src="storage.js"></script>
+  <script src="admin.js"></script>
+
+  <!-- تحسينات عرض إحصاءات Dashboard دون تغيير منطق admin.js -->
+  <script>
+    (function(){
+      function countByStatus(orders, status){
+        return orders.filter(o => o.status === status).length;
+      }
+
+      function refreshStats(){
+        try {
+          const st = Storage.getState();
+          const orders = st.orders || [];
+          const r = document.getElementById("statReceived");
+          const p = document.getElementById("statPreparing");
+          const w = document.getElementById("statOnTheWay");
+          const d = document.getElementById("statDelivered");
+
+          if (r) r.textContent = countByStatus(orders, "RECEIVED");
+          if (p) p.textContent = countByStatus(orders, "PREPARING");
+          if (w) w.textContent = countByStatus(orders, "ON_THE_WAY");
+          if (d) d.textContent = countByStatus(orders, "DELIVERED");
+        } catch {}
+      }
+
+      refreshStats();
+      setInterval(refreshStats, 2000);
+    })();
+  </script>
+
+  <!-- ستايل إضافي صغير خاص بالـ Admin (ضمن نفس الملف للحفاظ على بساطة المشروع) -->
+  <style>
+    .admin-stats{
+      padding: 14px 16px 16px;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 980px){
+      .admin-stats{ grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .stat{
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.16);
+      border-radius: 22px;
+      padding: 12px;
+      display:flex;
+      gap: 12px;
+      align-items:center;
+    }
+    .stat-icon{
+      width: 44px;
+      height: 44px;
+      display:grid;
+      place-items:center;
+      border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .stat-title{
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(238,242,255,.78);
+    }
+    .stat-value{
+      font-weight: 900;
+      font-size: 22px;
+      margin-top: 4px;
+    }
+
+    .admin-grid{
+      padding: 14px 16px 16px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 980px){
+      .admin-grid{ grid-template-columns: 1fr; }
+    }
+
+    .toggle-row{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .radio.big{
+      flex: 1 1 240px;
+      justify-content: center;
+      padding: 12px;
+    }
+    .radio.big span{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      font-weight: 900;
+    }
+
+    .admin-actions{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+    }
+  </style>
+</body>
+  </html>
