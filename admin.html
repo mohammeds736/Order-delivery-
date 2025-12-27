@@ -14,7 +14,11 @@
 </head>
 
 <body>
-  <!-- Admin Login Overlay -->
+
+  <!-- =======================================================
+       Admin Login Overlay (Gate)
+       كلمة المرور تُتحقق في admin.js
+       ======================================================= -->
   <div id="adminGate" class="gate">
     <div class="gate-card">
       <div class="gate-title">
@@ -43,6 +47,9 @@
     </div>
   </div>
 
+  <!-- =======================================================
+       Header
+       ======================================================= -->
   <header class="nav">
     <div class="nav-left">
       <div class="brand">
@@ -63,7 +70,12 @@
     </div>
   </header>
 
+  <!-- =======================================================
+       Main
+       ======================================================= -->
   <main class="container main">
+
+    <!-- =============== Settings ===================== -->
     <section class="section card">
       <div class="section-head">
         <div>
@@ -126,11 +138,14 @@
       </div>
     </section>
 
+    <!-- =============== Orders ===================== -->
     <section class="section card">
       <div class="section-head">
         <div>
           <h2 class="section-title">الطلبات</h2>
-          <p class="section-sub muted">تغيير الحالة سيظهر في تتبع الزبون ضمن نفس الجهاز (لأن هذا نموذج).</p>
+          <p class="section-sub muted">
+            تغيير الحالة سيظهر في تتبع الزبون ضمن نفس الجهاز/المتصفح (لأن هذا نموذج على GitHub Pages).
+          </p>
         </div>
 
         <div class="filters">
@@ -153,11 +168,24 @@
       <div id="ordersList" class="orders"></div>
     </section>
 
+    <!-- =============== Menu Full Admin ===================== -->
     <section class="section card">
       <div class="section-head">
         <div>
-          <h2 class="section-title">إدارة المنيو</h2>
-          <p class="section-sub muted">تعديل الأسعار وتشغيل/إيقاف الأصناف.</p>
+          <h2 class="section-title">إدارة المنيو (لوحة كاملة)</h2>
+          <p class="section-sub muted">إضافة/تعديل/حذف أصناف + تشغيل/إيقاف + تعديل أسعار.</p>
+        </div>
+
+        <div class="filters">
+          <button id="btnOpenAddItem" class="btn btn-primary" type="button">
+            <i class="fa-solid fa-plus"></i>
+            إضافة صنف جديد
+          </button>
+
+          <div class="field field-icon">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="menuSearchAdmin" class="input" placeholder="بحث في الأصناف..." />
+          </div>
         </div>
       </div>
 
@@ -171,8 +199,60 @@
     </footer>
   </main>
 
+  <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
+  <!-- =======================================================
+       Modal: Add/Edit Item
+       نفس تصميم gate لكنه خاص بالمنيو
+       ======================================================= -->
+  <div id="itemModal" class="gate">
+    <div class="gate-card">
+      <div class="gate-title">
+        <i class="fa-solid fa-burger"></i>
+        <span id="itemModalTitle">إضافة صنف</span>
+      </div>
+      <div class="muted" style="margin-top:6px; line-height:1.8;">
+        املأ البيانات ثم احفظ. الصورة تكون رابط مباشر (URL).
+      </div>
+
+      <label class="label">القسم</label>
+      <select id="itemCat" class="select"></select>
+
+      <label class="label">اسم الصنف</label>
+      <input id="itemName" class="input" placeholder="مثال: شاورما دجاج" />
+
+      <label class="label">الوصف</label>
+      <textarea id="itemDesc" class="textarea" placeholder="وصف مختصر..."></textarea>
+
+      <label class="label">السعر (د.أ)</label>
+      <input id="itemPrice" class="input" type="number" step="0.05" min="0" />
+
+      <label class="label">رابط الصورة (URL)</label>
+      <input id="itemImg" class="input" placeholder="https://..." />
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+        <label class="btn btn-secondary" style="flex:1; justify-content:center;">
+          <input id="itemAvailable" type="checkbox" style="margin-inline-start:10px;" checked />
+          متاح
+        </label>
+
+        <button id="btnSaveItem" class="btn btn-primary" type="button" style="flex:1; justify-content:center;">
+          <i class="fa-solid fa-floppy-disk"></i>
+          حفظ
+        </button>
+
+        <button id="btnCloseItemModal" class="btn btn-ghost" type="button" style="flex:1; justify-content:center;">
+          <i class="fa-solid fa-xmark"></i>
+          إغلاق
+        </button>
+      </div>
+
+      <div id="itemModalMsg" class="muted small" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script src="data.js"></script>
   <script src="storage.js"></script>
   <script src="admin.js"></script>
